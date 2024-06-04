@@ -1,0 +1,1700 @@
+{
+	"info": {		
+		"name": "POST Company City API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Preconditions",
+			"item": [
+				{
+					"name": "Create Unique Company City",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has companyCityKey property\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.environment.set('createdUniqueCity', jsonData.data.key);\r",
+									"    pm.expect(jsonData.statusCode).to.eql(201);\r",
+									"    pm.expect(jsonData.data).to.have.property('key').eql(\"UNIQUETESTCITY\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"UNIQUETESTCITY\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"UniqueTestCity\"},{\"language\": \"RU\",\"name\":\"УникальныйТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tests",
+			"item": [
+				{
+					"name": "POST request with all mandatory fields - CMPCT6",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.environment.set('createdTestCity', jsonData.data.key);\r",
+									"    pm.expect(jsonData.statusCode).to.eql(201);\r",
+									"    pm.expect(jsonData.data).to.have.property('key').eql(\"TESTCITY\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITY\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"TestCity\"},{\"language\": \"RU\",\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with body with key that is not unique - CMPCT7",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var cityKey = pm.environment.get('createdUniqueCity');\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);   \r",
+									" // Uncomment the check when https://trello.com/c/b1uTQjGp/ is fixed ",
+									"    pm.expect(jsonData.message).to.eql([`CompanyCity with key: ${cityKey} is already exist`]) \r",
+									"//  pm.expect(jsonData.message[0].field).to.eql('key');\r",
+									"//  pm.expect(jsonData.message[0].error[0]).to.eql(`CompanyCity with key: ${cityKey} is already exist`);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"UNIQUETESTCITY\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"UniqueTestCity\"},{\"language\": \"RU\",\"name\":\"УникальныйТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},	
+				{
+					"name": "POST request without all mandatory fields - CMPCT8",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400); \r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"key is required\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields is required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with all mandatory fields, key field in lowercase - CMPCT9",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.environment.set('createdCityLowercase', jsonData.data.key);\r",
+									"    pm.expect(jsonData.statusCode).to.eql(201);\r",
+									"    pm.expect(jsonData.data).to.have.property('key').eql(\"TESTCITYINLOWERCASE\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"testcityinlowercase\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"testcityinlowercase\"},{\"language\": \"RU\",\"name\":\"тестситивнижнемрегистре\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request Body with empty key - CMPCT10",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400); \r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"key should not be empty\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"TestCity\"},{\"language\": \"RU\",\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request Body with key filled spaces - CMPCT11",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400); \r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"key should not be empty\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"  \",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"TestCity\"},{\"language\": \"RU\",\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with body without key - CMPCT12",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400); \r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"key is required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"localizationFields\": [{\"language\": \"EN\",\"name\": \"TestCity\"},{\"language\": \"RU\",\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request Body with key filled numbers - CMPCT13",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);   \r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"key must contain only letters (a-zA-Z)\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"123\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"TestCity\"},{\"language\": \"RU\",\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request Body with key filled special characters - CMPCT14",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"key must contain only letters (a-zA-Z)\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"#$%^\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"TestCity\"},{\"language\": \"RU\",\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request Body with key filled cyrillic uppercase symbol - CMPCT15",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"key must contain only letters (a-zA-Z)\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"ТЕСТГОРОД\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"TestCity\"},{\"language\": \"RU\",\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request Body with key filled cyrillic lowercase symbol - CMPCT16",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"key must contain only letters (a-zA-Z)\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"тестгород\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"TestCity\"},{\"language\": \"RU\",\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request Body with empty name - CMPCT17",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields.0.name should not be empty\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.1.name should not be empty\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITYKEY\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"\"},{\"language\": \"RU\",\"name\": \"\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request Body with name filled spaces - CMPCT18",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields.0.name should not be empty\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.1.name should not be empty\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITYKEY\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"  \"},{\"language\": \"RU\",\"name\": \"  \"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with body without name - CMPCT19",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields.0.name is required\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.1.name is required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITYKEY\",\"localizationFields\": [{\"language\": \"EN\"},{\"language\": \"RU\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with all mandatory fields improper type - CMPCT20",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    //Uncomment the check when the bug https://trello.com/c/jxbRysEy is fixed\r",
+									"    /* pm.expect(jsonData.message[0]).to.eql(\"localizationFields.0.language must be one of the EN, RU\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.0.name must be a string\");\r",
+									"    pm.expect(jsonData.message[2]).to.eql(\"localizationFields.1.language must be one of the EN, RU\");\r",
+									"    pm.expect(jsonData.message[3]).to.eql(\"localizationFields.1.name must be a string\");\r",
+									"    pm.expect(jsonData.message[4]).to.eql(\"key must be a string\"); */\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": true,\"localizationFields\": [{\"language\": true,\"name\": true},{\"language\": true,\"name\": true}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request  Body with empty mandatory text fields - CMPCT21",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    //Uncomment the check when the bug https://trello.com/c/jxbRysEy is fixed \r",
+									"    /* pm.expect(jsonData.message[0]).to.eql(\"localizationFields.0.language must be one of the EN, RU\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.0.name must be a string\");\r",
+									"    pm.expect(jsonData.message[2]).to.eql(\"localizationFields.1.language must be one of the EN, RU\");\r",
+									"    pm.expect(jsonData.message[3]).to.eql(\"localizationFields.1.name must be a string\");\r",
+									"    pm.expect(jsonData.message[4]).to.eql(\"key must be a string\"); */\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"\",\"localizationFields\": [{\"language\": \"\",\"name\": \"\"},{\"language\": \"\",\"name\": \"\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request  with body with mandatory text fields populated with spaces - CMPCT22",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    //Uncomment the check when the bug https://trello.com/c/jxbRysEy is fixed\r",
+									"    /* pm.expect(jsonData.message[0]).to.eql(\"localizationFields.0.language must be one of the EN, RU\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.0.name must be a string\");\r",
+									"    pm.expect(jsonData.message[2]).to.eql(\"localizationFields.1.language must be one of the EN, RU\");\r",
+									"    pm.expect(jsonData.message[3]).to.eql(\"localizationFields.1.name must be a string\");\r",
+									"    pm.expect(jsonData.message[4]).to.eql(\"key must be a string\"); */\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"  \",\"localizationFields\": [{\"language\": \"   \",\"name\": \"   \"},{\"language\": \"   \",\"name\": \"   \"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with body with mandatory  text fields populated with spaces at the beginning and in the end - CMPCT23",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.environment.set('createdTestCityWithSpaces', jsonData.data.key);\r",
+									"    pm.expect(jsonData.statusCode).to.eql(201);\r",
+									"    pm.expect(jsonData.data).to.have.property('key').eql(\"TESTCITYSP\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \" TESTCITYSP \",\"localizationFields\": [{\"language\": \" EN \",\"name\": \" TestCity \"},{\"language\": \" RU \",\"name\": \" ТестСити \"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with body without localizationFields - CMPCT24",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields is required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITYKEY\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with empty localizationFields - CMPCT25",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields should not be empty\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITYKEY\",\"localizationFields\": []}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with empty mandatory fields in localizationFields - CMPCT26",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    //Uncomment the check when the bug https://trello.com/c/jxbRysEy is fixed \r",
+									"    /* pm.expect(jsonData.message[0]).to.eql(\"localizationFields.0.language must be one of the EN, RU\");   \r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.0.name is required\");\r",
+									"    pm.expect(jsonData.message[2]).to.eql(\"localizationFields.1.language must be one of the EN, RU\");\r",
+									"    pm.expect(jsonData.message[3]).to.eql(\"localizationFields.1.name is required\");*/\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITY\",\"localizationFields\": [{\"language\": \"\",\"name\": \"\"},{\"language\": \"\",\"name\": \"\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with mandatory fields in localizationFields populated with spaces  - CMPCT27",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    //Uncomment the check when the bug https://trello.com/c/jxbRysEy is fixed\r",
+									"    /*pm.expect(jsonData.message[0]).to.eql(\"localizationFields.0.language must be one of the EN, RU\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.0.name is required\");\r",
+									"    pm.expect(jsonData.message[2]).to.eql(\"localizationFields.1.language must be one of the EN, RU\");\r",
+									"    pm.expect(jsonData.message[3]).to.eql(\"localizationFields.1.name is required\");*/\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITY\",\"localizationFields\": [{\"language\": \"  \",\"name\": \"   \"},{\"language\": \"   \",\"name\": \"  \"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with all required fields localizationFields - language EN only - CMPCT28",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields must include RU localization\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITYKEY\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"TestCity\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with all required fields localizationFields - language RU only - CMPCT29",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields must include EN localization\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITYKEY\",\"localizationFields\": [{\"language\": \"RU\",\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with all required fields localizationFields - language EN + EN - CMPCT30",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields must include RU localization\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITYKEY\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"TestCity\"},{\"language\": \"EN\",\"name\": \"TestCity1\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with all required fields localizationFields - language RU + RU - CMPCT31",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields must include EN localization\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITYKEY\",\"localizationFields\": [{\"language\": \"RU\",\"name\": \"ТестСити1\"},{\"language\": \"RU\",\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with all required fields localizationFields - language RU + RU +  EN - CMPCT32",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields must contain unique localizations\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITYKEY\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"TestCity\"},{\"language\": \"RU\",\"name\": \"ТестСити\"},{\"language\": \"RU\",\"name\": \"ТестСити1\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with all required fields localizationFields - language EN + EN +  RU - CMPCT33",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields must contain unique localizations\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITYKEY\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"TestCity\"},{\"language\": \"EN\",\"name\": \"TestCity1\"},{\"language\": \"RU\",\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with all required fields localizationFields - empty language - CMPCT34",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"   /*Uncomment the check when the bug https://trello.com/c/jxbRysEy is fixed\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields.0 must be one of the EN, RU\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.0 must be one of the EN, RU\"); */\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITY\",\"localizationFields\": [{\"language\": \"\",\"name\": \"TestCity\"},{\"language\": \"\",\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with all required fields localizationFields - filled spaces language - CMPCT35",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"   /*Uncomment the check when the bug https://trello.com/c/jxbRysEy is fixed\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields.0 must be one of the EN, RU\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.0 must be one of the EN, RU\"); */\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITY\",\"localizationFields\": [{\"language\": \"  \",\"name\": \"TestCity\"},{\"language\": \"  \",\"name\": \"ТестСити\"}]}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with all required fields localizationFields - without language - CMPCT36",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"   /*Uncomment the check when the bug https://trello.com/c/jxbRysEy is fixed\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields.0 is required\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.1 is required\");*/\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITY\",\"localizationFields\": [{\"name\": \"TestCity\"},{\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with all required fields localizationFields - invalid language  - CMPCT37",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"   /*Uncomment the check when the bug https://trello.com/c/jxbRysEy is fixed\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"localizationFields.0 must be one of the EN, RU\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.0 must be one of the EN, RU\");*/\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITY\",\"localizationFields\": [{\"language\": \"DE\",\"name\": \"TestCity\"},{\"language\": \"PL\",\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with body with text fields populated with max number of chars (name - 80 chars, key 20) - CMPCT38",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.environment.set('createdTestCityMax', jsonData.data.key);\r",
+									"    pm.expect(jsonData.statusCode).to.eql(201);\r",
+									"    pm.expect(jsonData.data).to.have.property('key').eql(\"TESTCIYTESTCIYTESTCI\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCIYTESTCIYTESTCI\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"text text text text text text text text text text text text text text text textt\"},{\"language\": \"RU\",\"name\": \"text text text text text text text text text text text text text text text textt\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with body with text fields populated with max +1 number of chars (name - 81 chars, key 21) - CMPCT39",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"key must be shorter than or equal to 20 characters\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.0.name must be shorter than or equal to 80 characters\");\r",
+									"    pm.expect(jsonData.message[2]).to.eql(\"localizationFields.1.name must be shorter than or equal to 80 characters\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTTESTTESTTESTTESTT\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"text text text text text text text text text text text text text text text texttt\"},{\"language\": \"RU\",\"name\": \"text text text text text text text text text text text text text text text texttt\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with body with empty key and name - CMPCT40",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"key should not be empty\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.0.name should not be empty\");\r",
+									"    pm.expect(jsonData.message[2]).to.eql(\"localizationFields.1.name should not be empty\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"\",\"localizationFields\": [{\"language\": \"RU\",\"name\": \"\"},{\"language\": \"EN\",\"name\": \"\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with body without key and name - CMPCT41",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message[0]).to.eql(\"key is required\");\r",
+									"    pm.expect(jsonData.message[1]).to.eql(\"localizationFields.0.name is required\");\r",
+									"    pm.expect(jsonData.message[2]).to.eql(\"localizationFields.1.name is required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"localizationFields\": [{\"language\": \"RU\"},{\"language\": \"EN\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "POST request with invalid data (Bad Request) - CMPCT42",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message).to.eql(\"Unexpected token t in JSON at position 0\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "text",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Postconditions",
+			"item": [
+				{
+					"name": "Delete Test Company City",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(jsonData.statusCode).to.eql(200);\r",
+									"    pm.expect(jsonData.data).to.have.property('raw').eql([]);\r",
+									"    pm.expect(jsonData.data).to.have.property('affected').eql(1);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseURL}}/api/v1/company-city-cms/{{createdTestCity}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Unique Company City",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(200);\r",
+									"    pm.expect(jsonData.data).to.have.property('raw').eql([]);\r",
+									"    pm.expect(jsonData.data).to.have.property('affected').eql(1);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseURL}}/api/v1/company-city-cms/{{createdUniqueCity}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Test Company City In Lowercase",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(200);\r",
+									"    pm.expect(jsonData.data).to.have.property('raw').eql([]);\r",
+									"    pm.expect(jsonData.data).to.have.property('affected').eql(1);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseURL}}/api/v1/company-city-cms/{{createdCityLowercase}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Test Company City With Spaces",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(200);\r",
+									"    pm.expect(jsonData.data).to.have.property('raw').eql([]);\r",
+									"    pm.expect(jsonData.data).to.have.property('affected').eql(1);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseURL}}/api/v1/company-city-cms/{{createdTestCityWithSpaces}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Test Company City Max",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(200);\r",
+									"    pm.expect(jsonData.data).to.have.property('raw').eql([]);\r",
+									"    pm.expect(jsonData.data).to.have.property('affected').eql(1);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseURL}}/api/v1/company-city-cms/{{createdTestCityMax}}"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

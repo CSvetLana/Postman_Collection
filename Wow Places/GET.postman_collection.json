@@ -1,0 +1,473 @@
+{
+	"info": {		
+		"name": "GET Company City API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"		
+	},
+	"item": [
+		{
+			"name": "Preconditions",
+			"item": [
+				{
+					"name": "Create Test City",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.environment.set('createdTestCity', jsonData.data.key);\r",
+									"    pm.expect(jsonData.statusCode).to.eql(201);\r",
+									"    pm.expect(jsonData.data).to.have.property('key').eql(\"TESTCITY\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCITY\",\"localizationFields\": [{\"language\": \"EN\",\"name\": \"TestCity\"},{\"language\": \"RU\",\"name\": \"ТестСити\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Test Category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has companyCategoryKey property\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.environment.set('createdCategoryKey', jsonData.data.key);\r",
+									"    pm.expect(jsonData.data).to.have.property('key').eql(\"TESTCATEGORY\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\": \"TESTCATEGORY\", \"localizationFields\": [{\"language\": \"EN\", \"name\": \"Test category\"}, {\"language\": \"RU\", \"name\": \"Тест категория\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-category-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Test Company",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.environment.set('createdTestCompanyId', jsonData.data.id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"available\": true, \"paymentWithCash\": true, \"paymentWithCard\": false, \"address\": \"Test address\", \"cities\": [\"{{createdTestCity}}\"], \"categories\": [\"{{createdCategoryKey}}\"],\"speakLanguages\": [\"EN\"], \"localizationFields\": [{\"language\": \"EN\", \"name\": \"Test company\", \"description\": \"Test company\"}, {\"language\": \"RU\", \"name\": \"Тестовая компания\", \"description\": \"Tестовая компания\"}]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseURL}}/api/v1/company-cms"
+					},
+					"response": []
+				},
+				{
+					"name": "Get CityLocalization Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var cityKey = pm.environment.get('createdTestCity');\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.data.some(data => data.city === cityKey)).eql(true);\r",
+									"    if (jsonData.data.some(data => data.city === cityKey)) {\r",
+									"    var testCity = jsonData.data.find(data => (data.city === cityKey & data.language === 'EN'));\r",
+									"    pm.expect(testCity.language).eql('EN');\r",
+									"    pm.environment.set('enLocalizationId', testCity.id); \r",
+									"    var testCity = jsonData.data.find(data => (data.city === cityKey & data.language === 'RU'));\r",
+									"    pm.expect(testCity.language).eql('RU');\r",
+									"    pm.environment.set('ruLocalizationId', testCity.id);\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseURL}}/api/v1/company-city-localization"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tests",
+			"item": [
+				{
+					"name": "GET list of CompanyCities with header language = RU - CMPCT1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var cityKey = pm.environment.get('createdTestCity');\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(200);\r",
+									"    pm.expect(jsonData.data.some(data => data.key === cityKey)).eql(true);\r",
+									"    if (jsonData.data.some(data => data.key === cityKey)) {\r",
+									"    var testCity = jsonData.data.find(data => data.key === cityKey);\r",
+									"    pm.expect(testCity.language).eql('RU');\r",
+									"    pm.expect(testCity.name).eql('ТестСити');\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.request.headers.add({\r",
+									"    key: 'language',\r",
+									"    value: 'RU'\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseURL}}/api/v1/company-city"
+					},
+					"response": []
+				},
+				{
+					"name": "GET list of CompanyCities with header language = EN - CMPCT2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var cityKey = pm.environment.get('createdTestCity');\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(200);\r",
+									"    pm.expect(jsonData.data.some(data => data.key === cityKey)).eql(true);\r",
+									"    if (jsonData.data.some(data => data.key === cityKey)) {\r",
+									"    var testCity = jsonData.data.find(data => data.key === cityKey);\r",
+									"    pm.expect(testCity.language).eql('EN');\r",
+									"    pm.expect(testCity.name).eql('TestCity');\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.request.headers.add({\r",
+									"    key: 'language',\r",
+									"    value: 'EN'\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseURL}}/api/v1/company-city"
+					},
+					"response": []
+				},
+				{
+					"name": "GET list of CompanyCities without  mandatory header language - CMPCT3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message).to.eql(\"Header language must be one of them: EN, RU\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseURL}}/api/v1/company-city"
+					},
+					"response": []
+				},
+				{
+					"name": "GET list of CompanyCities with empty  mandatory header language - CMPCT4",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.have.status('Bad Request');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(400);\r",
+									"    pm.expect(jsonData.message).to.eql(\"Header language must be one of them: EN, RU\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.request.headers.add({\r",
+									"    key: 'language',\r",
+									"    value: ''\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseURL}}/api/v1/company-city"
+					},
+					"response": []
+				},
+				{
+					"name": "GET list of all CompanyCities-cms - CMPCT5",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var cityKey = pm.environment.get('createdTestCity');\r",
+									"    var cityCompany = pm.environment.get('createdTestCompanyId');\r",
+									"    var enLocalizationId = pm.environment.get('enLocalizationId');\r",
+									"    var ruLocalizationId = pm.environment.get('ruLocalizationId');\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.statusCode).to.eql(200);\r",
+									"    pm.expect(jsonData.data.some(data => data.key === cityKey)).eql(true);\r",
+									"    if (jsonData.data.some(data => data.key === cityKey)) {\r",
+									"    var testCity = jsonData.data.find(data => data.key === cityKey);\r",
+									"    pm.expect(testCity.companies[0]).to.eql(cityCompany);\r",
+									"    pm.expect(testCity.localizationFields).to.eql([enLocalizationId, ruLocalizationId]);\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseURL}}/api/v1/company-city-cms"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Postconditions",
+			"item": [
+				{
+					"name": "Delete Company",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(jsonData.statusCode).to.eql(200);\r",
+									"    pm.expect(jsonData.data).to.have.property('raw').eql([]);\r",
+									"    pm.expect(jsonData.data).to.have.property('affected').eql(1);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseURL}}/api/v1/company-cms/{{createdTestCompanyId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(jsonData.statusCode).to.eql(200);\r",
+									"    pm.expect(jsonData.data).to.have.property('raw').eql([]);\r",
+									"    pm.expect(jsonData.data).to.have.property('affected').eql(1);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseURL}}/api/v1/company-category-cms/{{createdCategoryKey}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Test City",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body matches expected structure\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(jsonData.statusCode).to.eql(200);\r",
+									"    pm.expect(jsonData.data).to.have.property('raw').eql([]);\r",
+									"    pm.expect(jsonData.data).to.have.property('affected').eql(1);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseURL}}/api/v1/company-city-cms/{{createdTestCity}}"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,529 @@
+{
+	"info": {
+		"_postman_id": "3e42d01d-d8f6-4bfc-9cef-503a9c3056a9",
+		"name": "Chuprasova_myretro",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25469359"
+	},
+	"item": [
+		{
+			"name": "Boards",
+			"item": [
+				{
+					"name": "Get Boards",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/boards",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"boards"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Boards",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Test_Тест\",\r\n  \"templateId\": 1,\r\n  \"description\": \"Test API\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/boards",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"boards"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Boards_edit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Тестирую приложение\",\r\n  \"description\": \"Описание доски\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/boards/872",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"boards",
+								"872"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Boards",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/boards/585",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"boards",
+								"585"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Boards members",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/boards/585/members",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"boards",
+								"585",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Boards Spy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"spy\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/boards/872/spy",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"boards",
+								"872",
+								"spy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Boards ShareLink",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/boards/f6a2b5ea4563f0e6d66942b362909abcfc4e70d46ac73def6d57bd3efff4",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"boards",
+								"f6a2b5ea4563f0e6d66942b362909abcfc4e70d46ac73def6d57bd3efff4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Columns",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"color\": \"#F4CE67\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/columns/2747",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"columns",
+								"2747"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cards",
+			"item": [
+				{
+					"name": "Card new",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"columnId\": 2819,\r\n  \"content\": \"Card 34\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cards",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cards"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cards Edit content",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"content\": \"Card 123\",\r\n  \"hide\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cards/8710",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cards",
+								"8710"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete card",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cards/8710",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cards",
+								"8710"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cards hide",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"hide\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cards/8709/hide",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cards",
+								"8709",
+								"hide"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Move cards",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"columnId\": 2817\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cards/8709/position",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cards",
+								"8709",
+								"position"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cards rating",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cards/8712/rating",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cards",
+								"8712",
+								"rating"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete cards rating ",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cards/8706/rating",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cards",
+								"8706",
+								"rating"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Comments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/comments?cardId=8706",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"comments"
+							],
+							"query": [
+								{
+									"key": "cardId",
+									"value": "8706"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Comment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"cardId\": 8711,\r\n  \"content\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/comments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit comments",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"content\": \"!@#$%^&*()\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/comments/1767",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"comments",
+								"1767"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete comments",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/comments/8711",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"comments",
+								"8711"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Other",
+			"item": [
+				{
+					"name": "Get Me",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Switch_theme",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"isDarkMode\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/switch_theme",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"switch_theme"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Templates",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/templates",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"templates"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
